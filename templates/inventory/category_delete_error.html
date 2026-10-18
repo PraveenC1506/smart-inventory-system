@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Cannot Delete Category</h1>
+        <p>This category is currently being used by products.</p>
+    </div>
+</div>
+
+<div class="error-card">
+
+    <div class="error-icon">
+        ⚠️
+    </div>
+
+    <h2>{{ category.name }}</h2>
+
+    <p>
+        This category cannot be deleted because
+        <strong>{{ product_count }}</strong>
+        product(s) are currently using it.
+    </p>
+
+    <p class="help-text">
+        Please move or delete those products before deleting this category.
+    </p>
+
+    <a href="{% url 'category_list' %}" class="btn-primary">
+        ← Back to Categories
+    </a>
+
+</div>
+
+<style>
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.page-header p {
+    color: #6b7280;
+    margin-top: 6px;
+}
+
+.error-card {
+    background: white;
+    max-width: 600px;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.error-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.error-card h2 {
+    margin-bottom: 12px;
+}
+
+.error-card p {
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.help-text {
+    color: #6b7280 !important;
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 11px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+</style>
+
+{% endblock %}

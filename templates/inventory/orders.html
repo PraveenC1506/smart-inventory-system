@@ -1,0 +1,296 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Order Management</h1>
+        <p>Manage customer orders and sales</p>
+    </div>
+
+    <a href="{% url 'order_add' %}" class="btn btn-primary">
+        + Create New Order
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="content-card">
+
+    <div class="table-header">
+        <h3>All Orders</h3>
+
+        <input
+            type="text"
+            id="orderSearch"
+            placeholder="Search orders..."
+        >
+    </div>
+
+    <div class="table-responsive">
+        <table class="orders-table">
+
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Order Date</th>
+                    <th>Items</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="ordersTableBody">
+
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        <strong>#{{ order.id }}</strong>
+                    </td>
+
+                    <td>
+                        {{ order.customer.name }}
+                    </td>
+
+                    <td>
+                        {{ order.order_date|date:"d M Y, h:i A" }}
+                    </td>
+
+                    <td class="items-cell">
+                        {% for item in order.items.all %}
+                            {{ item.product.name }} ({{ item.quantity }}){% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            No items
+                        {% endfor %}
+                    </td>
+
+                    <td class="amount-cell">
+                        ₹{{ order.total_amount|floatformat:2 }}
+                    </td>
+
+                    <td class="status-cell">
+                        <span class="status-badge status-{{ order.status|lower }}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        No orders found.
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+/* Main card */
+.content-card {
+    width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Search header */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 0 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.table-header input {
+    width: 260px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+}
+
+.table-header input:focus {
+    border-color: #2563eb;
+}
+
+/* Table container */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Orders table */
+.orders-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin: 0 !important;
+}
+
+/* All headings and values centered */
+.orders-table thead th,
+.orders-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 16px 12px !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Heading design */
+.orders-table thead th {
+    background: #f8fafc !important;
+    color: #64748b !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+/* Data design */
+.orders-table tbody td {
+    color: #334155 !important;
+    font-size: 14px !important;
+}
+
+/* Equal column alignment */
+.orders-table th:nth-child(1),
+.orders-table td:nth-child(1) {
+    width: 10% !important;
+}
+
+.orders-table th:nth-child(2),
+.orders-table td:nth-child(2) {
+    width: 15% !important;
+}
+
+.orders-table th:nth-child(3),
+.orders-table td:nth-child(3) {
+    width: 20% !important;
+}
+
+.orders-table th:nth-child(4),
+.orders-table td:nth-child(4) {
+    width: 20% !important;
+}
+
+.orders-table th:nth-child(5),
+.orders-table td:nth-child(5) {
+    width: 18% !important;
+}
+
+.orders-table th:nth-child(6),
+.orders-table td:nth-child(6) {
+    width: 17% !important;
+}
+
+/* Keep order ID and amount on one line */
+.orders-table td:first-child,
+.orders-table .amount-cell {
+    white-space: nowrap;
+}
+
+/* Center item text */
+.orders-table .items-cell {
+    overflow-wrap: anywhere;
+}
+
+/* Status badge */
+.status-badge {
+    display: inline-block !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+}
+
+.status-completed {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+.status-pending {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+.status-cancelled {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* Empty message */
+.orders-table .empty-state {
+    text-align: center !important;
+    padding: 30px !important;
+    color: #64748b !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .content-card {
+        padding: 16px;
+    }
+
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-header input {
+        width: 100%;
+    }
+
+    .orders-table {
+        min-width: 850px !important;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('orderSearch');
+    const tableBody = document.getElementById('ordersTableBody');
+
+    if (!searchInput || !tableBody) {
+        return;
+    }
+
+    searchInput.addEventListener('input', function () {
+        const searchText = this.value.toLowerCase().trim();
+
+        tableBody.querySelectorAll('tr').forEach(function (row) {
+            row.style.display = row.innerText
+                .toLowerCase()
+                .includes(searchText) ? '' : 'none';
+        });
+    });
+});
+</script>
+
+{% endblock %}

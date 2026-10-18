@@ -1,0 +1,112 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Edit Customer{% endblock %}
+{% block page_heading %}Edit Customer{% endblock %}
+
+{% block content %}
+<style>
+    .form-card {
+        max-width: 750px;
+        margin: 20px auto;
+        padding: 28px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #374151;
+        font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font: inherit;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+    }
+
+    .btn {
+        padding: 11px 18px;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #e5e7eb;
+        color: #374151;
+        margin-right: 8px;
+    }
+</style>
+
+<div class="form-card">
+    <h2>Edit Customer</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="name">Customer Name *</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ customer.name }}"
+                maxlength="200"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value="{{ customer.phone }}"
+                maxlength="20"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ customer.email }}"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address">{{ customer.address }}</textarea>
+        </div>
+
+        <a href="{% url 'customers' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Update Customer</button>
+    </form>
+</div>
+{% endblock %}

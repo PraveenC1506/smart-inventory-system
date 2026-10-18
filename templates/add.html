@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product | Smart Inventory{% endblock %}
+
+{% block page_heading %}Add Product{% endblock %}
+
+{% block content %}
+
+<style>
+    .add-product-page {
+        max-width: 1000px;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 28px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-card h2 {
+        margin: 0 0 6px;
+        color: #1e293b;
+    }
+
+    .form-card > p {
+        margin: 0 0 25px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        margin-bottom: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #2563eb;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn-cancel {
+        padding: 11px 18px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        background: white;
+        color: #475569;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .btn-save {
+        padding: 11px 20px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background: #1d4ed8;
+    }
+
+    @media (max-width: 700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+    }
+</style>
+
+
+<div class="add-product-page">
+
+    <div class="form-card">
+
+        <h2>Add New Product</h2>
+        <p>Enter the product details below.</p>
+
+        <form>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <input
+                        type="text"
+                        id="product_name"
+                        name="product_name"
+                        placeholder="Enter product name"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="">Select category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="computer">Computer Accessories</option>
+                        <option value="mobile">Mobile Accessories</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="sku">SKU</label>
+                    <input
+                        type="text"
+                        id="sku"
+                        name="sku"
+                        placeholder="Enter SKU"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="barcode">Barcode</label>
+                    <input
+                        type="text"
+                        id="barcode"
+                        name="barcode"
+                        placeholder="Enter barcode"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="purchase_price">Purchase Price</label>
+                    <input
+                        type="number"
+                        id="purchase_price"
+                        name="purchase_price"
+                        placeholder="0.00"
+                        step="0.01"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="selling_price">Selling Price</label>
+                    <input
+                        type="number"
+                        id="selling_price"
+                        name="selling_price"
+                        placeholder="0.00"
+                        step="0.01"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="stock_quantity">Stock Quantity</label>
+                    <input
+                        type="number"
+                        id="stock_quantity"
+                        name="stock_quantity"
+                        placeholder="0"
+                        min="0"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="reorder_level">Reorder Level</label>
+                    <input
+                        type="number"
+                        id="reorder_level"
+                        name="reorder_level"
+                        placeholder="10"
+                        min="0"
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="{% url 'product_list' %}" class="btn-cancel">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn-save">
+                    Save Product
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

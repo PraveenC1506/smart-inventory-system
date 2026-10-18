@@ -1,0 +1,408 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Purchases | Smart Inventory{% endblock %}
+{% block page_heading %}Purchases{% endblock %}
+
+{% block content %}
+
+<style>
+.purchase-page {
+    width: 100%;
+}
+
+.purchase-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.purchase-header h2 {
+    margin: 0 0 5px;
+    font-size: 26px;
+    color: #111827;
+}
+
+.purchase-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.add-purchase-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.add-purchase-btn:hover {
+    background: #1d4ed8;
+}
+
+.purchase-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+}
+
+.purchase-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 0 6px 18px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.purchase-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111827;
+}
+
+.purchase-card-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.purchase-search {
+    width: 210px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 12px;
+}
+
+.purchase-search:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+}
+
+.purchase-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.purchase-table {
+    width: 100%;
+    min-width: 950px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.purchase-table th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.purchase-table td {
+    padding: 13px 10px;
+    font-size: 12px;
+    color: #374151;
+    border-bottom: 1px solid #edf0f3;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.purchase-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Purchase ID */
+.purchase-table th:nth-child(1),
+.purchase-table td:nth-child(1) {
+    width: 11%;
+    text-align: left;
+}
+
+/* Supplier */
+.purchase-table th:nth-child(2),
+.purchase-table td:nth-child(2) {
+    width: 15%;
+    text-align: center;
+}
+
+/* Product */
+.purchase-table th:nth-child(3),
+.purchase-table td:nth-child(3) {
+    width: 17%;
+    text-align: center;
+}
+
+/* Quantity */
+.purchase-table th:nth-child(4),
+.purchase-table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
+
+/* Purchase Price */
+.purchase-table th:nth-child(5),
+.purchase-table td:nth-child(5) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Total */
+.purchase-table th:nth-child(6),
+.purchase-table td:nth-child(6) {
+    width: 12%;
+    text-align: center;
+}
+
+/* Date */
+.purchase-table th:nth-child(7),
+.purchase-table td:nth-child(7) {
+    width: 12%;
+    text-align: center;
+}
+
+/* Status */
+.purchase-table th:nth-child(8),
+.purchase-table td:nth-child(8) {
+    width: 9%;
+    text-align: center;
+}
+
+.purchase-id {
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.product-name {
+    font-weight: 700;
+    color: #111827;
+}
+
+.total-price {
+    font-weight: 700;
+    color: #16a34a;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.empty-purchase {
+    text-align: center !important;
+    padding: 35px 15px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .purchase-header,
+    .purchase-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .purchase-search {
+        width: 100%;
+    }
+
+    .purchase-card {
+        padding: 16px 12px;
+    }
+}
+</style>
+
+<div class="purchase-page">
+
+    <div class="purchase-header">
+        <div>
+            <h2>Purchase Management</h2>
+            <p>Manage supplier purchases and stock purchases</p>
+        </div>
+
+        <a href="{% url 'purchase_add' %}" class="add-purchase-btn">
+            + Add Purchase
+        </a>
+    </div>
+
+    <div class="purchase-card">
+
+        <div class="purchase-card-header">
+            <div>
+                <h3>Purchase Orders</h3>
+                <p>View and manage purchase records</p>
+            </div>
+
+            <input
+                type="text"
+                id="purchaseSearch"
+                class="purchase-search"
+                placeholder="Search purchases..."
+                aria-label="Search purchase records"
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="purchase-table-wrapper">
+
+            <table class="purchase-table">
+
+                <thead>
+                    <tr>
+                        <th>Purchase ID</th>
+                        <th>Supplier</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Purchase Price</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="purchaseTableBody">
+
+                    {% if purchases %}
+
+                        {% for purchase in purchases %}
+
+                            {% for item in purchase.items.all %}
+
+                            <tr class="purchase-row">
+
+                                <td>
+                                    <span class="purchase-id">
+                                        #{{ purchase.id }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if purchase.supplier %}
+                                        {{ purchase.supplier.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <span class="product-name">
+                                        {{ item.product.name }}
+                                    </span>
+                                </td>
+
+                                <td>{{ item.quantity }}</td>
+
+                                <td>
+                                    ₹{{ item.purchase_price|floatformat:2 }}
+                                </td>
+
+                                <td>
+                                    <span class="total-price">
+                                        ₹{{ item.total_price|floatformat:2 }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {{ purchase.purchase_date|date:"d M Y" }}
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        Completed
+                                    </span>
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr class="initial-empty-row">
+                            <td colspan="8" class="empty-purchase">
+                                No purchase records available.
+                            </td>
+                        </tr>
+
+                    {% endif %}
+
+                    <tr id="noPurchaseResults" style="display: none;">
+                        <td colspan="8" class="empty-purchase">
+                            No matching purchases found.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('purchaseSearch');
+    const tableBody = document.getElementById('purchaseTableBody');
+
+    const rows = Array.from(
+        tableBody.querySelectorAll('.purchase-row')
+    );
+
+    const noResults = document.getElementById('noPurchaseResults');
+    const initialEmpty = tableBody.querySelector('.initial-empty-row');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query);
+
+            row.style.display = matches ? '' : 'none';
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (initialEmpty) {
+            initialEmpty.style.display =
+                rows.length === 0 ? '' : 'none';
+        }
+
+        noResults.style.display =
+            rows.length > 0 && visibleCount === 0 ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

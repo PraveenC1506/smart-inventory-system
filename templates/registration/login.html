@@ -1,0 +1,526 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Inventory System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f6fc;
+            color: #14213d;
+        }
+
+        /* Full-screen layout */
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            width: 100%;
+            min-height: 100vh;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Left branding section */
+        .brand-panel {
+            background: linear-gradient(145deg, #172b50, #0b1429);
+            color: white;
+            padding: clamp(30px, 5vw, 76px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before,
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(65, 119, 255, 0.10);
+            pointer-events: none;
+        }
+
+        .brand-panel::before {
+            width: 380px;
+            height: 380px;
+            right: -160px;
+            top: -160px;
+        }
+
+        .brand-panel::after {
+            width: 420px;
+            height: 420px;
+            left: -210px;
+            bottom: -300px;
+        }
+
+        .brand-header,
+        .brand-content,
+        .brand-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            font-weight: 800;
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.3);
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-tagline {
+            color: #a9bddf;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .brand-content {
+            margin: 45px 0;
+            max-width: 650px;
+        }
+
+        .brand-content h1 {
+            font-size: clamp(32px, 3.5vw, 52px);
+            line-height: 1.2;
+            letter-spacing: -1.2px;
+            margin-bottom: 22px;
+        }
+
+        .brand-content h1 span {
+            color: #73a7ff;
+        }
+
+        .brand-description {
+            color: #bdcbe1;
+            line-height: 1.9;
+            font-size: 16px;
+            max-width: 520px;
+            margin-bottom: 35px;
+        }
+
+        .features {
+            display: grid;
+            gap: 23px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: rgba(91, 145, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .feature h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .feature p {
+            font-size: 13px;
+            color: #a9bddf;
+        }
+
+        .brand-footer {
+            font-size: 12px;
+            color: #91a6c9;
+        }
+
+        /* Right login section */
+        .form-panel {
+            min-width: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(28px, 5vw, 80px);
+            background: linear-gradient(145deg, #ffffff, #f5f8ff);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .mobile-logo {
+            display: none;
+        }
+
+        .form-heading {
+            margin-bottom: 36px;
+        }
+
+        .form-heading h2 {
+            font-size: clamp(28px, 3vw, 36px);
+            letter-spacing: -0.8px;
+            margin-bottom: 12px;
+            color: #132342;
+        }
+
+        .form-heading p {
+            color: #77849b;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .error-message {
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            border-radius: 9px;
+            padding: 12px 14px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 24px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 650;
+            color: #273753;
+            margin-bottom: 10px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7b8ba7;
+            font-size: 18px;
+        }
+
+        .field input {
+            width: 100%;
+            height: 54px;
+            padding: 0 16px 0 46px;
+            border: 1px solid #dce3ef;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            color: #182640;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input::placeholder {
+            color: #9aa6ba;
+        }
+
+        .field input:focus {
+            border-color: #3977f6;
+            box-shadow: 0 0 0 4px rgba(57, 119, 246, 0.11);
+        }
+
+        .login-button {
+            width: 100%;
+            height: 55px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(100deg, #3478f6, #2457e8);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.20);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 11px 24px rgba(37, 99, 235, 0.27);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: #8793a7;
+            font-size: 12px;
+            margin-top: 26px;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 800px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                min-height: 100vh;
+                padding: 35px 24px;
+            }
+
+            .login-card {
+                max-width: 420px;
+            }
+
+            .mobile-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 35px;
+            }
+
+            .mobile-logo .brand-logo {
+                width: 45px;
+                height: 45px;
+                font-size: 23px;
+            }
+
+            .mobile-logo .brand-name {
+                font-size: 19px;
+            }
+
+            .form-heading h2 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-height: 650px) and (min-width: 801px) {
+            .brand-panel {
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
+            .brand-content {
+                margin: 24px 0;
+            }
+
+            .brand-content h1 {
+                font-size: 32px;
+            }
+
+            .brand-description {
+                margin-bottom: 20px;
+            }
+
+            .features {
+                gap: 14px;
+            }
+
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .form-panel {
+                padding-top: 25px;
+                padding-bottom: 25px;
+            }
+
+            .form-heading {
+                margin-bottom: 24px;
+            }
+
+            .field {
+                margin-bottom: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-wrapper">
+
+        <section class="brand-panel">
+            <div class="brand-header">
+                <div class="brand-logo">S</div>
+                <div>
+                    <div class="brand-name">Smart Inventory System</div>
+                    <div class="brand-tagline">
+                        Manage Products · Track Stock · Simplify Business
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-content">
+                <h1>
+                    Inventory Management<br>
+                    <span>Made Simple.</span>
+                </h1>
+
+                <p class="brand-description">
+                    Manage your products, suppliers, purchases and sales
+                    with one simple and efficient inventory platform.
+                </p>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">▦</div>
+                        <div>
+                            <h3>Product Management</h3>
+                            <p>Keep your product catalogue organized.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">↗</div>
+                        <div>
+                            <h3>Stock Tracking</h3>
+                            <p>Monitor inventory levels with ease.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">▤</div>
+                        <div>
+                            <h3>Purchases &amp; Sales</h3>
+                            <p>Manage business transactions in one place.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">▥</div>
+                        <div>
+                            <h3>Reports &amp; Insights</h3>
+                            <p>Use inventory data to make better decisions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-footer">
+                © 2026 Smart Inventory System
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <div class="login-card">
+
+                <div class="mobile-logo">
+                    <div class="brand-logo">S</div>
+                    <div class="brand-name">Smart Inventory System</div>
+                </div>
+
+                <div class="form-heading">
+                    <h2>Welcome back</h2>
+                    <p>
+                        Enter your account credentials to access your dashboard.
+                    </p>
+                </div>
+
+                {% if form.errors %}
+                    <div class="error-message" role="alert">
+                        Invalid username or password. Please try again.
+                    </div>
+                {% endif %}
+
+                {% if next and user.is_authenticated %}
+                    <div class="error-message" role="alert">
+                        Your account cannot access that page.
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <div class="input-wrap">
+                            <span class="input-icon" aria-hidden="true">♙</span>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                required
+                                autofocus
+                            >
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <span class="input-icon" aria-hidden="true">▣</span>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        Sign In &nbsp; →
+                    </button>
+                </form>
+
+                <div class="secure-note">
+                    <span aria-hidden="true">▣</span>
+                    Secure access to your inventory dashboard
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

@@ -1,0 +1,391 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Products | Smart Inventory{% endblock %}
+{% block page_heading %}Products{% endblock %}
+
+{% block content %}
+
+<style>
+.product-page {
+    width: 100%;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.product-header h2 {
+    margin: 0 0 5px;
+    font-size: 26px;
+    color: #1e293b;
+}
+
+.product-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.add-product-btn {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.add-product-btn:hover {
+    background: #1d4ed8;
+}
+
+.product-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.product-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 0 6px 18px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.product-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111827;
+}
+
+.product-card-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.product-search {
+    width: 210px;
+    height: 38px;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.product-search:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+}
+
+.product-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.product-table {
+    width: 100%;
+    min-width: 950px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.product-table th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.product-table td {
+    padding: 13px 10px;
+    font-size: 12px;
+    color: #374151;
+    border-bottom: 1px solid #edf0f3;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.product-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Consistent column widths */
+.product-table th:nth-child(1),
+.product-table td:nth-child(1) {
+    width: 19%;
+    text-align: left;
+}
+
+.product-table th:nth-child(2),
+.product-table td:nth-child(2) {
+    width: 10%;
+    text-align: center;
+}
+
+.product-table th:nth-child(3),
+.product-table td:nth-child(3) {
+    width: 13%;
+    text-align: center;
+}
+
+.product-table th:nth-child(4),
+.product-table td:nth-child(4) {
+    width: 14%;
+    text-align: center;
+}
+
+.product-table th:nth-child(5),
+.product-table td:nth-child(5) {
+    width: 14%;
+    text-align: center;
+}
+
+.product-table th:nth-child(6),
+.product-table td:nth-child(6) {
+    width: 9%;
+    text-align: center;
+}
+
+.product-table th:nth-child(7),
+.product-table td:nth-child(7) {
+    width: 12%;
+    text-align: center;
+}
+
+.product-table th:nth-child(8),
+.product-table td:nth-child(8) {
+    width: 9%;
+    text-align: center;
+}
+
+.product-name {
+    font-weight: 700;
+    color: #111827 !important;
+}
+
+.stock-good {
+    color: #16a34a !important;
+    font-weight: 700;
+}
+
+.stock-low {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    background: #eff6ff;
+    color: #2563eb;
+    white-space: nowrap;
+}
+
+.action-btn:hover {
+    background: #dbeafe;
+}
+
+.empty-product {
+    text-align: center !important;
+    padding: 35px 15px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .product-header,
+    .product-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .product-search {
+        width: 100%;
+    }
+
+    .product-card {
+        padding: 16px 12px;
+    }
+}
+</style>
+
+<div class="product-page">
+
+    <div class="product-header">
+        <div>
+            <h2>Product Management</h2>
+            <p>Manage your inventory products</p>
+        </div>
+
+        <a href="{% url 'product_add' %}" class="add-product-btn">
+            + Add Product
+        </a>
+    </div>
+
+    <div class="product-card">
+
+        <div class="product-card-header">
+            <div>
+                <h3>All Products</h3>
+                <p>View and manage your products</p>
+            </div>
+
+            <input
+                type="text"
+                id="productSearch"
+                class="product-search"
+                placeholder="Search products..."
+                aria-label="Search products"
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="product-table-wrapper">
+
+            <table class="product-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Purchase Price</th>
+                        <th>Selling Price</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="productTableBody">
+
+                    {% for product in products %}
+
+                    <tr class="product-row">
+
+                        <td class="product-name">
+                            {{ product.name }}
+                        </td>
+
+                        <td>{{ product.sku }}</td>
+
+                        <td>
+                            {% if product.category %}
+                                {{ product.category.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>₹{{ product.purchase_price }}</td>
+
+                        <td>₹{{ product.selling_price }}</td>
+
+                        <td class="{% if product.stock_quantity <= product.reorder_level %}stock-low{% else %}stock-good{% endif %}">
+                            {{ product.stock_quantity }}
+                        </td>
+
+                        <td>{{ product.reorder_level }}</td>
+
+                        <td>
+                            <a
+                                href="{% url 'product_detail' product.id %}"
+                                class="action-btn"
+                            >
+                                View
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr class="initial-empty-row">
+                        <td colspan="8" class="empty-product">
+                            No products available.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    <tr id="noSearchResults" style="display: none;">
+                        <td colspan="8" class="empty-product">
+                            No matching products found.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('productSearch');
+    const tableBody = document.getElementById('productTableBody');
+
+    const rows = Array.from(
+        tableBody.querySelectorAll('.product-row')
+    );
+
+    const noResults = document.getElementById('noSearchResults');
+    const initialEmpty = tableBody.querySelector('.initial-empty-row');
+
+    searchInput.addEventListener('input', function () {
+        const searchValue = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent
+                .toLowerCase()
+                .includes(searchValue);
+
+            row.style.display = matches ? '' : 'none';
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (initialEmpty) {
+            initialEmpty.style.display =
+                rows.length === 0 ? '' : 'none';
+        }
+
+        noResults.style.display =
+            rows.length > 0 && visibleCount === 0 ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

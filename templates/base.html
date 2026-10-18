@@ -1,0 +1,187 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Smart Inventory System{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">SI</div>
+
+                <div>
+                    <h2>Smart Inventory</h2>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <!-- Dashboard -->
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <span class="nav-icon">▦</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Products and Categories -->
+                <div class="nav-section">
+                    <p>PRODUCTS</p>
+
+                    <a href="{% url 'product_list' %}" class="nav-item">
+                        <span class="nav-icon">▣</span>
+                        <span>Products</span>
+                    </a>
+
+                    <a href="{% url 'category_list' %}" class="nav-item">
+                        <span class="nav-icon">▦</span>
+                        <span>Categories</span>
+                    </a>
+                </div>
+
+                <!-- Suppliers and Purchases -->
+                <div class="nav-section">
+                    <p>SUPPLIERS &amp; PURCHASES</p>
+
+                    <a href="{% url 'suppliers' %}" class="nav-item">
+                        <span class="nav-icon">◉</span>
+                        <span>Suppliers</span>
+                    </a>
+
+                    <a href="{% url 'purchases' %}" class="nav-item">
+                        <span class="nav-icon">▤</span>
+                        <span>Purchases</span>
+                    </a>
+                </div>
+
+                <!-- Customers and Sales -->
+                <div class="nav-section">
+                    <p>CUSTOMERS &amp; SALES</p>
+
+                    <a href="{% url 'customers' %}" class="nav-item">
+                        <span class="nav-icon">♙</span>
+                        <span>Customers</span>
+                    </a>
+
+                    <a href="{% url 'orders' %}" class="nav-item">
+                        <span class="nav-icon">🛒</span>
+                        <span>Orders</span>
+                    </a>
+                </div>
+
+                <!-- Inventory -->
+                <div class="nav-section">
+                    <p>INVENTORY</p>
+
+                    <a href="{% url 'current_stock' %}" class="nav-item">
+                        <span class="nav-icon">▥</span>
+                        <span>Current Stock</span>
+                    </a>
+
+                    <a href="{% url 'low_stock' %}" class="nav-item">
+                        <span class="nav-icon">⚠</span>
+                        <span>Low Stock</span>
+                    </a>
+
+                    <a href="{% url 'stock_movement' %}" class="nav-item">
+                        <span class="nav-icon">↔</span>
+                        <span>Stock Movement</span>
+                    </a>
+                </div>
+
+                <!-- Reports and Analytics -->
+                <div class="nav-section">
+                    <p>REPORTS &amp; ANALYTICS</p>
+
+                    <a href="{% url 'sales_report' %}" class="nav-item">
+                        <span class="nav-icon">▥</span>
+                        <span>Reports</span>
+                    </a>
+
+                    <a href="{% url 'reorder_suggestions' %}" class="nav-item">
+                        <span class="nav-icon">↗</span>
+                        <span>Reorder Suggestions</span>
+                    </a>
+                </div>
+
+                <!-- Settings -->
+                <div class="nav-section">
+                    <p>SETTINGS</p>
+
+                    <a href="{% url 'settings' %}" class="nav-item">
+                        <span class="nav-icon">⚙</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="user-avatar">U</div>
+
+                <div class="user-info">
+                    <strong>Admin User</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Main Area -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="topbar">
+
+                <div>
+                    <h1>{% block page_heading %}Dashboard{% endblock %}</h1>
+                    <p>Smart Inventory &amp; Order Management</p>
+                </div>
+
+                <div class="topbar-actions">
+
+                    <button type="button" class="notification-btn">
+                        🔔
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <div class="profile">
+                        <div class="profile-avatar">A</div>
+
+                        <div>
+                            <strong>Admin</strong>
+                            <span>Administrator</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Page Content -->
+            <section class="page-content">
+
+                {% block content %}
+                {% endblock %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

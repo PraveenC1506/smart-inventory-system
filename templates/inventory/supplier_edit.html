@@ -1,0 +1,252 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Edit Supplier{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Edit Supplier</h1>
+        <p>Update supplier information</p>
+    </div>
+
+    <a href="{% url 'suppliers' %}" class="btn-secondary">
+        ← Back to Suppliers
+    </a>
+</div>
+
+<div class="form-card">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="name">
+                    Supplier Name <span>*</span>
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ supplier.name }}"
+                    placeholder="Enter supplier name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="contact_person">Contact Person</label>
+                <input
+                    type="text"
+                    id="contact_person"
+                    name="contact_person"
+                    value="{{ supplier.contact_person|default_if_none:'' }}"
+                    placeholder="Enter contact person"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    value="{{ supplier.phone }}"
+                    placeholder="Enter phone number"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ supplier.email }}"
+                    placeholder="Enter email address"
+                >
+            </div>
+
+            <div class="form-group full-width">
+                <label for="address">Address</label>
+                <textarea
+                    id="address"
+                    name="address"
+                    rows="4"
+                    placeholder="Enter supplier address"
+                >{{ supplier.address }}</textarea>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'suppliers' %}" class="btn-secondary">
+                Cancel
+            </a>
+
+            <button type="submit" class="btn-primary">
+                Update Supplier
+            </button>
+        </div>
+    </form>
+
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.page-header p {
+    margin-top: 6px;
+    color: #64748b;
+}
+
+.form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-group label span {
+    color: #dc2626;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 11px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.alert-message {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+}
+
+.alert-message.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.alert-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+@media (max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+}
+</style>
+
+{% endblock %}

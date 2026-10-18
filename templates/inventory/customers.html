@@ -1,0 +1,427 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Customers{% endblock %}
+{% block page_heading %}Customer Management{% endblock %}
+
+{% block content %}
+
+<style>
+.customers-page {
+    width: 100%;
+    min-width: 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.page-subtitle {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.content-card {
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    margin: 0 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111827;
+}
+
+.search-box input {
+    width: 210px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 12px;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 16px 18px 18px;
+    box-sizing: border-box;
+}
+
+.data-table {
+    width: 100%;
+    min-width: 950px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    padding: 12px 12px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f3;
+    color: #374151;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.data-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Customer Name */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 16%;
+    text-align: left;
+}
+
+/* Phone */
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 12%;
+    text-align: center;
+}
+
+/* Email */
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 17%;
+    text-align: center;
+}
+
+/* Address */
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 21%;
+    text-align: center;
+}
+
+/* Total Orders */
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 12%;
+    text-align: center;
+}
+
+/* Actions */
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 22%;
+    text-align: center;
+}
+
+.data-table td:first-child strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+/* Edit and Delete in one row */
+.actions-cell {
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+}
+
+.action-buttons form {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+}
+
+.action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 58px;
+    min-height: 30px;
+    padding: 7px 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.action-link:hover {
+    background: #dbeafe;
+}
+
+.delete-link {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.delete-link:hover {
+    background: #fecaca;
+}
+
+.empty-message {
+    text-align: center !important;
+    padding: 35px 15px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .page-header,
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .search-box,
+    .search-box input {
+        width: 100%;
+    }
+
+    .table-container {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="customers-page">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Customer Management</h1>
+            <p class="page-subtitle">
+                Manage your customers and their information
+            </p>
+        </div>
+
+        <a href="{% url 'customer_add' %}" class="btn-primary">
+            <span>+</span>
+            Add Customer
+        </a>
+    </div>
+
+    <div class="content-card">
+
+        <div class="table-header">
+            <h3>All Customers</h3>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search customers..."
+                    aria-label="Search customers by name, phone, email or address"
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table class="data-table" id="customersTable">
+
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Total Orders</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="customersTableBody">
+
+                    {% for customer in customers %}
+
+                    <tr class="customer-row">
+
+                        <td>
+                            <strong>{{ customer.name }}</strong>
+                        </td>
+
+                        <td>{{ customer.phone|default:"-" }}</td>
+
+                        <td>{{ customer.email|default:"-" }}</td>
+
+                        <td>
+                            {{ customer.address|default:"-"|truncatechars:35 }}
+                        </td>
+
+                        <td>{{ customer.total_orders }}</td>
+
+                        <td class="actions-cell">
+                            <div class="action-buttons">
+
+                                <a
+                                    href="{% url 'customer_edit' customer.id %}"
+                                    class="action-link"
+                                >
+                                    Edit
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'customer_delete' customer.id %}"
+                                    onsubmit="return confirm('Are you sure you want to delete this customer?');"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="action-link delete-link"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr class="initial-empty-row">
+                        <td colspan="6" class="empty-message">
+                            No customers available. Click Add Customer to create one.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    <tr id="noSearchResults" style="display: none;">
+                        <td colspan="6" class="empty-message">
+                            No matching customers found.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('customersTableBody');
+
+    const rows = Array.from(
+        tableBody.querySelectorAll('.customer-row')
+    );
+
+    const noResults = document.getElementById('noSearchResults');
+    const initialEmpty = tableBody.querySelector('.initial-empty-row');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query);
+
+            row.style.display = matches ? '' : 'none';
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (initialEmpty) {
+            initialEmpty.style.display =
+                rows.length === 0 ? '' : 'none';
+        }
+
+        noResults.style.display =
+            rows.length > 0 && visibleCount === 0 ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

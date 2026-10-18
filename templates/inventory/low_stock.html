@@ -1,0 +1,361 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Low Stock{% endblock %}
+{% block page_heading %}Low Stock{% endblock %}
+
+{% block content %}
+
+<style>
+.low-stock-page {
+    width: 100%;
+}
+
+.page-header {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.page-subtitle {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.content-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    margin: 0 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.search-box input {
+    width: 210px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 12px;
+    background: #fff;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+}
+
+.table-container {
+    width: auto;
+    overflow-x: auto;
+    padding: 16px 18px 18px;
+}
+
+.data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    padding: 12px 14px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #edf0f3;
+    color: #374151;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+/* Product column */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 19%;
+    text-align: left;
+}
+
+/* SKU */
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 11%;
+    text-align: center;
+}
+
+/* Category */
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 13%;
+    text-align: center;
+}
+
+/* Current Stock */
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Reorder Level */
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Status */
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Actions */
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+    width: 10%;
+    text-align: center;
+}
+
+.stock-warning {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.view-btn {
+    display: inline-block;
+    padding: 6px 11px;
+    background: #eff6ff;
+    color: #2563eb;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.view-btn:hover {
+    background: #dbeafe;
+}
+
+.empty-message {
+    text-align: center !important;
+    padding: 35px 15px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 900px) {
+    .data-table {
+        min-width: 850px;
+    }
+}
+
+@media (max-width: 600px) {
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+        margin: 0 12px;
+        padding: 18px 4px;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .table-container {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="low-stock-page">
+
+    <div class="page-header">
+        <h1 class="page-title">Low Stock</h1>
+        <p class="page-subtitle">
+            Products that need to be restocked
+        </p>
+    </div>
+
+    <div class="content-card">
+
+        <div class="table-header">
+            <h3>Low Stock Products</h3>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search products..."
+                    aria-label="Search products by name, SKU or category"
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table class="data-table" id="lowStockTable">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="lowStockBody">
+
+                    {% for product in products %}
+
+                    <tr class="stock-row">
+
+                        <td>
+                            <strong>{{ product.name }}</strong>
+                        </td>
+
+                        <td>{{ product.sku }}</td>
+
+                        <td>
+                            {% if product.category %}
+                                {{ product.category.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <strong>{{ product.stock_quantity }}</strong>
+                        </td>
+
+                        <td>{{ product.reorder_level }}</td>
+
+                        <td>
+                            {% if product.stock_quantity == 0 %}
+                                <span class="stock-warning">
+                                    Out of Stock
+                                </span>
+                            {% else %}
+                                <span class="stock-warning">
+                                    Low Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a
+                                href="{% url 'product_detail' product.id %}"
+                                class="view-btn"
+                            >View</a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr id="initialEmpty">
+                        <td colspan="7" class="empty-message">
+                            No low stock products
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    <tr id="noSearchResults" style="display: none;">
+                        <td colspan="7" class="empty-message">
+                            No matching products found
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const rows = Array.from(
+        document.querySelectorAll('#lowStockBody .stock-row')
+    );
+
+    const noResults = document.getElementById('noSearchResults');
+    const initialEmpty = document.getElementById('initialEmpty');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent
+                .toLowerCase()
+                .includes(query);
+
+            row.style.display = matches ? '' : 'none';
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (initialEmpty) {
+            initialEmpty.style.display =
+                rows.length === 0 ? '' : 'none';
+        }
+
+        noResults.style.display =
+            rows.length > 0 && visibleCount === 0 ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

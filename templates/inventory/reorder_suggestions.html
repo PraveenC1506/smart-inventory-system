@@ -1,0 +1,355 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Reorder Suggestions{% endblock %}
+{% block page_heading %}Reorder Suggestions{% endblock %}
+
+{% block content %}
+
+<style>
+.reorder-page {
+    width: 100%;
+}
+
+.page-header {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.page-subtitle {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.info-card {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 9px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    color: #1e40af;
+    font-size: 13px;
+}
+
+.content-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    margin: 0 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #111827;
+}
+
+.search-box input {
+    width: 210px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 12px;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 16px 18px 18px;
+    box-sizing: border-box;
+}
+
+.data-table {
+    width: 100%;
+    min-width: 900px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    padding: 12px 12px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f3;
+    color: #374151;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.data-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Product */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 19%;
+    text-align: left;
+}
+
+/* SKU */
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 11%;
+    text-align: center;
+}
+
+/* Category */
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Current Stock */
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Reorder Level */
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 14%;
+    text-align: center;
+}
+
+/* Suggested Quantity */
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 16%;
+    text-align: center;
+}
+
+/* Priority */
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+    width: 12%;
+    text-align: center;
+}
+
+.product-name {
+    color: #111827;
+    font-weight: 700;
+}
+
+.priority-badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.empty-message {
+    text-align: center !important;
+    padding: 35px 15px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 18px 4px;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .table-container {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="reorder-page">
+
+    <div class="page-header">
+        <h1 class="page-title">Reorder Suggestions</h1>
+        <p class="page-subtitle">
+            Products that may need to be reordered
+        </p>
+    </div>
+
+    <div class="info-card">
+        Reorder suggestions are based on current stock levels and
+        product reorder levels.
+    </div>
+
+    <div class="content-card">
+
+        <div class="table-header">
+            <h3>Suggested Products</h3>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="reorderSearch"
+                    placeholder="Search products..."
+                    aria-label="Search reorder suggestions"
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Suggested Quantity</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+
+                <tbody id="reorderTableBody">
+
+                    {% for product in products %}
+
+                    <tr class="reorder-row">
+
+                        <td class="product-name">
+                            {{ product.name }}
+                        </td>
+
+                        <td>{{ product.sku }}</td>
+
+                        <td>
+                            {% if product.category %}
+                                {{ product.category.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>{{ product.stock_quantity }}</td>
+
+                        <td>{{ product.reorder_level }}</td>
+
+                        <td>
+                            {{ product.suggested_quantity|default:product.reorder_level }}
+                        </td>
+
+                        <td>
+                            {% if product.stock_quantity == 0 %}
+                                <span class="priority-badge">Critical</span>
+                            {% else %}
+                                <span class="priority-badge">High</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr class="initial-empty-row">
+                        <td colspan="7" class="empty-message">
+                            No reorder suggestions available
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    <tr id="noReorderResults" style="display: none;">
+                        <td colspan="7" class="empty-message">
+                            No matching products found
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('reorderSearch');
+    const tableBody = document.getElementById('reorderTableBody');
+
+    const rows = Array.from(
+        tableBody.querySelectorAll('.reorder-row')
+    );
+
+    const noResults = document.getElementById('noReorderResults');
+    const initialEmpty = tableBody.querySelector('.initial-empty-row');
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query);
+
+            row.style.display = matches ? '' : 'none';
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (initialEmpty) {
+            initialEmpty.style.display =
+                rows.length === 0 ? '' : 'none';
+        }
+
+        noResults.style.display =
+            rows.length > 0 && visibleCount === 0 ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

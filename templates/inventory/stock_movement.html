@@ -1,0 +1,510 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Stock Movement{% endblock %}
+{% block page_heading %}Stock Movement History{% endblock %}
+
+{% block content %}
+
+<style>
+.movement-page {
+    width: 100%;
+}
+
+.movement-heading {
+    margin-bottom: 24px;
+}
+
+.movement-heading h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.movement-heading p {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.movement-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.form-title {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.movement-form {
+    padding: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.form-group label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 14px;
+    background: #fff;
+    color: #111827;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.current-stock {
+    display: block;
+    margin-top: 2px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.search-box input {
+    width: 260px;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px 18px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #374151;
+}
+
+.data-table th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.type-in {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.type-out {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.type-adjustment {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.alert-message {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 7px;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .data-table {
+        min-width: 900px;
+    }
+
+    .movement-form {
+        padding: 18px;
+    }
+}
+</style>
+
+<div class="movement-page">
+
+    <div class="movement-heading">
+        <h1>Stock Movement History</h1>
+        <p>Track all inventory stock changes</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Add Stock Movement -->
+    <div class="movement-card">
+
+        <div class="form-title">Add Stock Movement</div>
+
+        <form method="POST" class="movement-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="product">Product</label>
+
+                    <select name="product" id="product" required>
+                        <option value="">Select Product</option>
+
+                        {% for product in products %}
+                            <option
+                                value="{{ product.id }}"
+                                data-stock="{{ product.stock_quantity }}"
+                            >
+                                {{ product.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <div
+                        id="currentStock"
+                        class="current-stock"
+                        aria-live="polite"
+                    >
+                        Select a product to view its current stock.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="movement_type">Transaction Type</label>
+
+                    <select
+                        name="movement_type"
+                        id="movement_type"
+                        required
+                    >
+                        <option value="">Select Type</option>
+                        <option value="IN">Stock In</option>
+                        <option value="OUT">Stock Out</option>
+                        <option value="ADJUSTMENT">Stock Adjustment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity" id="quantityLabel">
+                        Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        id="quantity"
+                        min="1"
+                        step="1"
+                        required
+                    >
+
+                    <small id="quantityHelp">
+                        Enter the quantity to add or remove.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="reference">Reference (Optional)</label>
+
+                    <input
+                        type="text"
+                        name="reference"
+                        id="reference"
+                        placeholder="e.g. Manual stock update"
+                    >
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="notes">Notes (Optional)</label>
+
+                    <textarea
+                        name="notes"
+                        id="notes"
+                        placeholder="Enter reason for stock movement"
+                    ></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <button type="submit" class="submit-btn">
+                        Save Stock Movement
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- Stock Transaction History -->
+    <div class="movement-card">
+
+        <div class="table-header">
+            <h3>Stock Transactions</h3>
+
+            <form method="GET" class="search-box">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Search products..."
+                >
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Transaction Type</th>
+                        <th>Quantity Changed</th>
+                        <th>Previous Stock</th>
+                        <th>Updated Stock</th>
+                        <th>Date &amp; Time</th>
+                        <th>Reference / Notes</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for movement in movements %}
+                        <tr>
+                            <td>{{ movement.product.name }}</td>
+
+                            <td>
+                                {% if movement.movement_type == 'IN' %}
+                                    <span class="type-badge type-in">
+                                        Stock In
+                                    </span>
+                                {% elif movement.movement_type == 'OUT' %}
+                                    <span class="type-badge type-out">
+                                        Stock Out
+                                    </span>
+                                {% else %}
+                                    <span class="type-badge type-adjustment">
+                                        Adjustment
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ movement.quantity }}</td>
+                            <td>{{ movement.previous_stock }}</td>
+                            <td>{{ movement.updated_stock }}</td>
+
+                            <td>
+                                {{ movement.created_at|date:"d M Y, h:i A" }}
+                            </td>
+
+                            <td>
+                                {% if movement.reference %}
+                                    {{ movement.reference }}
+                                {% endif %}
+
+                                {% if movement.notes %}
+                                    {% if movement.reference %} — {% endif %}
+                                    {{ movement.notes }}
+                                {% endif %}
+
+                                {% if not movement.reference and not movement.notes %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-message">
+                                    No stock movements available. Add a stock
+                                    movement using the form above.
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const productSelect = document.getElementById("product");
+    const currentStock = document.getElementById("currentStock");
+
+    const movementType = document.getElementById("movement_type");
+    const quantityLabel = document.getElementById("quantityLabel");
+    const quantityHelp = document.getElementById("quantityHelp");
+
+    function updateCurrentStock() {
+        const selectedOption =
+            productSelect.options[productSelect.selectedIndex];
+
+        if (!selectedOption || !selectedOption.value) {
+            currentStock.textContent =
+                "Select a product to view its current stock.";
+            return;
+        }
+
+        currentStock.textContent =
+            "Current stock: " + selectedOption.dataset.stock + " units";
+    }
+
+    productSelect.addEventListener("change", updateCurrentStock);
+    updateCurrentStock();
+
+    movementType.addEventListener("change", function () {
+        if (this.value === "ADJUSTMENT") {
+            quantityLabel.textContent = "New Stock Quantity";
+            quantityHelp.textContent =
+                "Enter the final stock quantity for this product.";
+        } else if (this.value === "IN") {
+            quantityLabel.textContent = "Quantity to Add";
+            quantityHelp.textContent =
+                "Enter the number of units to add to current stock.";
+        } else if (this.value === "OUT") {
+            quantityLabel.textContent = "Quantity to Remove";
+            quantityHelp.textContent =
+                "Enter the number of units to remove from current stock.";
+        } else {
+            quantityLabel.textContent = "Quantity";
+            quantityHelp.textContent =
+                "Enter the quantity to add or remove.";
+        }
+    });
+});
+</script>
+
+{% endblock %}

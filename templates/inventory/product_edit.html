@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Product | Smart Inventory{% endblock %}
+
+{% block page_heading %}Edit Product{% endblock %}
+
+{% block content %}
+
+<style>
+    .edit-product-page {
+        max-width: 1000px;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 28px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-card h2 {
+        margin: 0 0 6px;
+        color: #1e293b;
+    }
+
+    .form-card > p {
+        margin: 0 0 25px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #2563eb;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn-cancel {
+        padding: 11px 18px;
+        border: 1px solid #d1d5db;
+        border-radius: 7px;
+        background: white;
+        color: #475569;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .btn-cancel:hover {
+        background: #f8fafc;
+    }
+
+    .btn-update {
+        padding: 11px 20px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-update:hover {
+        background: #1d4ed8;
+    }
+
+   .messages-container {
+    margin-bottom: 20px;
+}
+
+.alert-message {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+</style>
+
+
+<div class="edit-product-page">
+
+    <div class="form-card">
+
+        <h2>Edit Product</h2>
+
+       <p>
+    Update the product details below.
+</p>
+
+{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert-message alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+                    <label for="product_name">
+                        Product Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="product_name"
+                        name="product_name"
+                        value="{{ product.name }}"
+                        placeholder="Enter product name"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        name="category"
+                        required
+                    >
+
+                        <option value="">
+                            Select category
+                        </option>
+
+                        {% for category in categories %}
+
+                            <option
+                                value="{{ category.id }}"
+                                {% if category.id == product.category.id %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ category.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="sku">
+                        SKU
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sku"
+                        name="sku"
+                        value="{{ product.sku }}"
+                        placeholder="Enter SKU"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="barcode">
+                        Barcode
+                    </label>
+
+                    <input
+                        type="text"
+                        id="barcode"
+                        name="barcode"
+                        value="{{ product.barcode }}"
+                        placeholder="Enter barcode"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="purchase_price">
+                        Purchase Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="purchase_price"
+                        name="purchase_price"
+                        value="{{ product.purchase_price }}"
+                        placeholder="0.00"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="selling_price">
+                        Selling Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="selling_price"
+                        name="selling_price"
+                        value="{{ product.selling_price }}"
+                        placeholder="0.00"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+    <label for="current_stock">Current Stock</label>
+    <input
+        type="number"
+        id="current_stock"
+        value="{{ product.stock_quantity }}"
+        readonly
+    >
+    <small>
+        To change stock, use the Stock Movement page.
+    </small>
+</div>
+
+
+                <div class="form-group">
+                    <label for="reorder_level">
+                        Reorder Level
+                    </label>
+
+                    <input
+                        type="number"
+                        id="reorder_level"
+                        name="reorder_level"
+                        value="{{ product.reorder_level }}"
+                        placeholder="10"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'product_detail' product.id %}"
+                    class="btn-cancel"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-update"
+                >
+                    Update Product
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
