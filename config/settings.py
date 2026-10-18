@@ -1,9 +1,8 @@
 
 """
-import dj_database_url
 Django settings for config project.
 """
-
+import dj_database_url
 import os
 from pathlib import Path
 
