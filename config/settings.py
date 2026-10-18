@@ -1,5 +1,6 @@
 
 """
+import dj_database_url
 Django settings for config project.
 """
 
@@ -22,15 +23,9 @@ load_dotenv(BASE_DIR / ".env")
 # SECURITY SETTINGS
 # =========================================================
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
 
-if not SECRET_KEY:
-    raise ValueError(
-        "DJANGO_SECRET_KEY is missing. "
-        "Please configure it in the .env file."
-    )
-
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -103,6 +98,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -140,31 +136,27 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE CONFIGURATION - POSTGRESQL
 # =========================================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv(
-            "DB_NAME",
-            "smart_inventory_db",
-        ),
-        "USER": os.getenv(
-            "DB_USER",
-            "postgres",
-        ),
-        "PASSWORD": os.getenv(
-            "DB_PASSWORD",
-            "",
-        ),
-        "HOST": os.getenv(
-            "DB_HOST",
-            "localhost",
-        ),
-        "PORT": os.getenv(
-            "DB_PORT",
-            "5432",
-        ),
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "smart_inventory_db"),
+            "USER": os.getenv("DB_USER", "postgres"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        }
+    }
 
 
 # =========================================================
@@ -221,7 +213,7 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # =========================================================
 # EMAIL CONFIGURATION
