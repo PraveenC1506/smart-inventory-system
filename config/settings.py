@@ -134,8 +134,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # =========================================================
 # DATABASE CONFIGURATION - POSTGRESQL
 # =========================================================
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("NEON_DATABASE_URL") or os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
     DATABASES = {
@@ -156,7 +155,6 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
         }
     }
-
 
 # =========================================================
 # PASSWORD VALIDATION
