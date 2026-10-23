@@ -35,9 +35,18 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "DJANGO_CSRF_TRUSTED_ORIGINS",
+        "https://smart-inventory-system-1u1q.onrender.com",
+    ).split(",")
+    if origin.strip()
+]
+
 # HTTPS security settings.
-# Keep these disabled for local HTTP development.
-# Enable them only after production HTTPS is configured.
+# Configure these through environment variables.
+# Keep them disabled for local HTTP development.
 
 SECURE_SSL_REDIRECT = (
     os.getenv("DJANGO_SECURE_SSL_REDIRECT", "False").lower()
@@ -58,7 +67,6 @@ SECURE_HSTS_SECONDS = int(
     os.getenv("DJANGO_SECURE_HSTS_SECONDS", "0")
 )
 
-# Enable these only after verifying your production HTTPS setup.
 SECURE_HSTS_INCLUDE_SUBDOMAINS = (
     os.getenv(
         "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
@@ -87,7 +95,7 @@ INSTALLED_APPS = [
 
     "inventory",
     "dashboard",
-    'rest_framework',
+    "rest_framework",
 ]
 
 
@@ -134,7 +142,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # =========================================================
 # DATABASE CONFIGURATION - POSTGRESQL
 # =========================================================
-DATABASE_URL = os.getenv("NEON_DATABASE_URL") or os.getenv("DATABASE_URL")
+
+DATABASE_URL = (
+    os.getenv("NEON_DATABASE_URL")
+    or os.getenv("DATABASE_URL")
+)
 
 if DATABASE_URL:
     DATABASES = {
@@ -155,6 +167,7 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
         }
     }
+
 
 # =========================================================
 # PASSWORD VALIDATION
@@ -210,15 +223,13 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # =========================================================
 # EMAIL CONFIGURATION
 # =========================================================
-
-# Standard Django email backend.
-# Console backend is suitable for local development.
-# Configure SMTP credentials separately before production email use.
 
 EMAIL_BACKEND = os.getenv(
     "DJANGO_EMAIL_BACKEND",
